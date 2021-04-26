@@ -1,17 +1,31 @@
 "use strict";
 
 let allProducts = [];
+let nameOfProduct = [];
+let numOfClickArray = [];
+let numOfShowArray = [];
+let clicksColor = [];
+let showColor = [];
+// eslint-disable-next-line no-unused-vars
+let numOfRound = 25;
 function Product(name, filepath) {
   this.name = name;
   this.filepath = filepath;
   this.noShow = 0;
   this.noClicks = 0;
+  this.instantView = " ";
+  this.showColor = "red";
+  this.clicksColor = "blue";
   allProducts.push(this);
+  nameOfProduct.push(this.name);
+  clicksColor.push(this.clicksColor);
+  showColor.push(this.showColor);
 }
 let clickToNum = 0;
 let firstImage;
 let seconfImage;
 let thirdImage;
+allProducts.lastShown = [];
 
 let sectionSrc = document.getElementById("imgSec");
 let imgOne = document.getElementById("imgOne");
@@ -52,7 +66,10 @@ function getImageProduct() {
   while (
     firstImage === seconfImage ||
     seconfImage === thirdImage ||
-    firstImage === thirdImage
+    firstImage === thirdImage ||
+    allProducts.lastShown.includes(firstImage) ||
+    allProducts.lastShown.includes(seconfImage) ||
+    allProducts.lastShown.includes(thirdImage)
   ) {
     firstImage = generateRandomNum();
     seconfImage = generateRandomNum();
@@ -70,6 +87,10 @@ function getImageProduct() {
   allProducts[firstImage].noShow += 1;
   allProducts[seconfImage].noShow += 1;
   allProducts[thirdImage].noShow += 1;
+
+  allProducts.lastShown[0] = firstImage;
+  allProducts.lastShown[1] = seconfImage;
+  allProducts.lastShown[2] = thirdImage;
 }
 
 sectionSrc.addEventListener("click", clickHandler);
@@ -81,11 +102,11 @@ function getResults() {
     let lilist = document.createElement("li");
     lilist.textContent =
       allProducts[index].name +
-      `  have  ` +
+      "  have  " +
       allProducts[index].noClicks +
-      `  votes, and, was seen  ` +
+      "  votes, and, was seen  " +
       allProducts[index].noShow +
-      `  times `;
+      "  times ";
     ulList.appendChild(lilist);
     viewR.removeEventListener("click", getResults);
   }
@@ -108,8 +129,59 @@ function clickHandler() {
     }
     getImageProduct();
   } else {
+    clickArray();
+    showArray();
+    generateChart();
     sectionSrc.removeEventListener("click", clickHandler);
   }
 }
 
 getImageProduct();
+function generateChart() {
+  let ctx = document.getElementById("myChart").getContext("2d");
+  // eslint-disable-next-line no-undef
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: nameOfProduct,
+      datasets: [
+        {
+          label: "Num of Clicks",
+          data: numOfClickArray,
+          backgroundColor: clicksColor,
+          borderColor: showColor,
+          borderWidht: 1,
+        },
+        {
+          label: "Num of Show",
+          data: numOfShowArray,
+          backgroundColor: showColor,
+          borderColor: clicksColor,
+          borderWidht: 1,
+        },
+      ],
+    },
+    Option: {
+      scale: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+            },
+          },
+        ],
+      },
+    },
+  });
+}
+
+function clickArray() {
+  for (let index = 0; index < allProducts.length; index++) {
+    numOfClickArray.push(allProducts[index].noClicks);
+  }
+}
+function showArray() {
+  for (let index = 0; index < allProducts.length; index++) {
+    numOfShowArray.push(allProducts[index].noShow);
+  }
+}
