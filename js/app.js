@@ -17,6 +17,7 @@ let sectionSrc = document.getElementById("imgSec");
 let imgOne = document.getElementById("imgOne");
 let imgTwo = document.getElementById("imgTwo");
 let imgThree = document.getElementById("imgThree");
+let viewR = document.getElementById("viewResult");
 
 new Product("bag", "./assets/bag.jpg");
 new Product("banana", "./assets/banana.jpg");
@@ -72,6 +73,7 @@ function getImageProduct() {
 }
 
 sectionSrc.addEventListener("click", clickHandler);
+viewR.addEventListener("click", getResults);
 
 function getResults() {
   let ulList = document.getElementById("finalResult");
@@ -85,6 +87,7 @@ function getResults() {
       allProducts[index].noShow +
       `  times `;
     ulList.appendChild(lilist);
+    viewR.removeEventListener("click", getResults);
   }
 }
 
@@ -105,7 +108,6 @@ function clickHandler() {
     }
     getImageProduct();
   } else {
-    getResults();
     sectionSrc.removeEventListener("click", clickHandler);
   }
 }
