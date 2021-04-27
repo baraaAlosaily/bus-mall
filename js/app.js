@@ -54,6 +54,7 @@ new Product("usb", "./assets/usb.gif");
 new Product("water-can", "./assets/water-can.jpg");
 new Product("wine-glass", "./assets/wine-glass.jpg");
 
+parseLocalStorage();
 function generateRandomNum() {
   return Math.floor(Math.random() * allProducts.length);
 }
@@ -132,7 +133,6 @@ function clickHandler() {
     clickArray();
     showArray();
     generateChart();
-    parseLocalStorage();
     storeOurProducts();
     sectionSrc.removeEventListener("click", clickHandler);
   }
@@ -197,10 +197,12 @@ function storeOurProducts() {
 }
 
 function parseLocalStorage() {
-  let previousProductsArr = JSON.parse(localStorage.getItem("products"));
+  let previousProductsArr = JSON.parse(localStorage.getItem("products")) || [];
   console.log(previousProductsArr);
   // this funtcion will update the newly created objects with the old literation values
-  updateArr(previousProductsArr);
+  if (previousProductsArr.length) {
+    updateArr(previousProductsArr);
+  }
 }
 
 function updateArr(previousProductsArr) {
