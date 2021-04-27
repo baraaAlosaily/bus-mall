@@ -132,11 +132,14 @@ function clickHandler() {
     clickArray();
     showArray();
     generateChart();
+    parseLocalStorage();
+    storeOurProducts();
     sectionSrc.removeEventListener("click", clickHandler);
   }
 }
 
 getImageProduct();
+
 function generateChart() {
   let ctx = document.getElementById("myChart").getContext("2d");
   // eslint-disable-next-line no-undef
@@ -183,5 +186,26 @@ function clickArray() {
 function showArray() {
   for (let index = 0; index < allProducts.length; index++) {
     numOfShowArray.push(allProducts[index].noShow);
+  }
+}
+
+function storeOurProducts() {
+  // in order to save our array of objects into the localstorage we will need to formate our json object in json string
+  let jsonStringProducts = JSON.stringify(allProducts);
+  // creare a new property in our localstorage
+  localStorage.setItem("products", jsonStringProducts);
+}
+
+function parseLocalStorage() {
+  let previousProductsArr = JSON.parse(localStorage.getItem("products"));
+  console.log(previousProductsArr);
+  // this funtcion will update the newly created objects with the old literation values
+  updateArr(previousProductsArr);
+}
+
+function updateArr(previousProductsArr) {
+  for (let index = 0; index < allProducts.length; index++) {
+    allProducts[index].noClicks = previousProductsArr[index].noClicks;
+    allProducts[index].noShow = previousProductsArr[index].noShow;
   }
 }
